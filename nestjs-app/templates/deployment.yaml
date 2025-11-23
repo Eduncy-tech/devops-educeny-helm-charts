@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "nestjs-app.fullname" . }}
+  name: {{ include "app.fullname" . }}
   labels:
-    {{- include "nestjs-app.labels" . | nindent 4 }}
+    {{- include "app.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "nestjs-app.selectorLabels" . | nindent 6 }}
+      {{- include "app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -19,14 +19,14 @@ spec:
         checksum/secrets: {{ include (print $.Template.BasePath "/externalsecret.yaml") . | sha256sum }}
         {{- end }}
       labels:
-        {{- include "nestjs-app.selectorLabels" . | nindent 8 }}
+        {{- include "app.selectorLabels" . | nindent 8 }}
         environment: {{ .Values.app.environment }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "nestjs-app.serviceAccountName" . }}
+      serviceAccountName: {{ include "app.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -54,14 +54,14 @@ spec:
             - name: NODE_CONFIG_ENV
               valueFrom:
                 configMapKeyRef:
-                  name: {{ include "nestjs-app.fullname" $ }}-config
+                  name: {{ include "app.fullname" $ }}-config
                   key: NODE_CONFIG_ENV
                   optional: true
             {{- range $key, $value := .Values.configMaps.data }}
             - name: {{ $key }}
               valueFrom:
                 configMapKeyRef:
-                  name: {{ include "nestjs-app.fullname" $ }}-config
+                  name: {{ include "app.fullname" $ }}-config
                   key: {{ $key }}
             {{- end }}
             {{- end }}
@@ -70,7 +70,7 @@ spec:
             - name: {{ .envName }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "nestjs-app.fullname" $ }}-secrets
+                  name: {{ include "app.fullname" $ }}-secrets
                   key: {{ .envName }}
             {{- end }}
             {{- end }}
