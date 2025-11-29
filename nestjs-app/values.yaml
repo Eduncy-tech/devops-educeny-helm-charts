@@ -3,13 +3,13 @@
 
 # Application configuration
 app:
-  name: ""  # Will be overridden per application
+  name: "" # Will be overridden per application
   version: "1.0.0"
   environment: "dev"
 
 # Image configuration
 image:
-  repository: ""  # Will be set to ECR repository
+  repository: "" # Will be set to ECR repository
   pullPolicy: IfNotPresent
   tag: "latest"
 
@@ -44,10 +44,9 @@ service:
 ingress:
   enabled: true
   className: "nginx"
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+  annotations: {}
   hosts:
-    - host: ""  # Will be set per environment
+    - host: "" # Will be set per environment
       paths:
         - path: /
           pathType: Prefix
@@ -94,7 +93,7 @@ env:
 # External Secrets configuration
 externalSecrets:
   enabled: true
-  secretStore: "aws-secrets-manager-dev"  # Will be overridden per environment
+  secretStore: "aws-secrets-manager-dev" # Will be overridden per environment
   secrets: []
   # Example:
   # - secretName: "app-database-credentials"
@@ -115,7 +114,7 @@ securityContext:
   runAsUser: 1000
   runAsGroup: 1000
   allowPrivilegeEscalation: false
-  readOnlyRootFilesystem: false  # Some Node.js apps need write access
+  readOnlyRootFilesystem: false # Some Node.js apps need write access
   capabilities:
     drop:
       - ALL
