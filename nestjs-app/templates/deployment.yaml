@@ -35,10 +35,18 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.command }}
+          command: {{ .Values.command | toJson }}
+          {{- end }}
+          {{- if .Values.args }}
+          args: {{ .Values.args | toJson }}
+          {{- end }}
+          {{- if ne .Values.service.enabled false }}
           ports:
             - name: http
               containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
+          {{- end }}
           {{- if .Values.healthcheck.enabled }}
           livenessProbe:
             {{- toYaml .Values.healthcheck.livenessProbe | nindent 12 }}
